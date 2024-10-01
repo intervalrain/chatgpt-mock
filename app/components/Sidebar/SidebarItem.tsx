@@ -23,15 +23,3 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon, text, onClick }) => {
 };
 
 export default SidebarItem;
-
-// <div
-//   className="flex items-center p-2 space-x-3 hover:bg-gray-200 rounded-md cursor-pointer transition-colors duration-200 ease-in-out"
-//   onClick={() => navigate("../")}
-// >
-//   <LoaderPinwheel className="text-gray-600" />
-//   <p>ChatGPT</p>
-// </div>
-// <div className="flex items-center px-2 space-x-3 p-2 hover:bg-gray-200 rounded-md cursor-pointer">
-//   <LayoutGrid className="text-gray-600" />
-//   <p>Explore GPT</p>
-// </div>

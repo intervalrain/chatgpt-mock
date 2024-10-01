@@ -15,13 +15,13 @@ const ConversationList: React.FC = () => {
 
       let group: string;
       if (diffDays === 0) {
-        group = "Today";
+        group = "今天";
       } else if (diffDays === 1) {
-        group = 'Yesterday';
+        group = "昨天";
       } else if (diffDays <= 7) {
-        group = "Past 7 Days";
+        group = "過去 7 天";
       } else if (diffDays <= 30) {
-        group = "Past 30 Days";
+        group = "過去 30 天";
       } else {
         group = conversation.date.toLocaleDateString("default", {
           month: "long",

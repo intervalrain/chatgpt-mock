@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Avatar from '@/app/utils/Avatar';
-import { ChevronDown, Settings, LogOut, ArrowRightToLine, SquarePlus, UserPen, Bot, BotMessageSquare, BookPlus, Check } from 'lucide-react';
+import { ChevronDown, Settings, LogOut, ArrowRightToLine, SquarePlus, UserPen, Bot, BookPlus, Check } from 'lucide-react';
 import { mockUser } from '@/app/mock/userData';
 import { useSidebar } from '@/app/context/SidebarContext';
 import Menu from '../ui/Menu';
@@ -48,7 +48,7 @@ const Header: React.FC = () => {
             className="flex items-center p-2 font-semibold text-gray-600 rounded-md hover:bg-gray-100"
             onClick={toggleModelMenu}
           >
-            <BotMessageSquare className="mr-3 h-5 w-5"/><h2 className="text-xl text-gray-500">DSM Bot ({model})</h2>
+            <Bot className="mr-3 h-5 w-5"/><h2 className="text-xl text-gray-500">DSM Bot ({model})</h2>
             <ChevronDown className="ml-2" />
           </button>
           <Menu 

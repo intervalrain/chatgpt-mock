@@ -1,13 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import React from "react";
 import {
   ArrowLeftToLine,
-  ArrowRightToLine,
   SquarePlus,
-  LoaderPinwheel,
-  LayoutGrid,
+  Bot,
+  SquareLibrary,
 } from "lucide-react";
 import ConversationList from "./ConversationList";
 import { useNavigate } from "react-router-dom";
@@ -38,8 +36,8 @@ const Sidebar: React.FC = () => {
         </button>
       </div>
       <div className="p-2">
-        <SidebarItem icon={<LoaderPinwheel size={20}/>} text="ChatGPT" onClick={() => navigate("../")} />
-        <SidebarItem icon={<LayoutGrid size={20}/>} text="Explore GPT" onClick={() => {}} />
+        <SidebarItem icon={<Bot size={20}/>} text="DSM Bot" onClick={() => navigate("../")} />
+        <SidebarItem icon={<SquareLibrary size={20}/>} text="DSM Documents" onClick={() => {}} />
       </div>
       <ConversationList />
     </aside>
