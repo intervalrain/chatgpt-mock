@@ -13,7 +13,7 @@ const Menu: React.FC<MenuProps> = ({
   onClose,
   children,
   align = "left",
-  anchorEl,
+  anchorEl
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [menuStyle, setMenuStyle] = useState<React.CSSProperties>({});

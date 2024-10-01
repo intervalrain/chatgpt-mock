@@ -3,7 +3,8 @@
 import "./styles/globals.css";
 import Sidebar from "./components/Sidebar/Sidebar";
 import { BrowserRouter as Router } from "react-router-dom";
-import { AppProvider } from "./context/AppProvider";
+import { ServiceProvider } from "./context/ServiceProvider";
+import { SidebarProvider } from "./context/SidebarContext";
 
 
 export default function RootLayout({
@@ -14,14 +15,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Router>
-        <AppProvider>
+        <ServiceProvider>
           <body>
             <div className="flex h-screen">
               <Sidebar />
               <main className="flex-1 overflow-hidden">{children}</main>
             </div>
           </body>
-        </AppProvider>
+        </ServiceProvider>
       </Router>
     </html>
   );

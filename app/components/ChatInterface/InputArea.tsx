@@ -43,7 +43,7 @@ const InputArea: React.FC<InputAreaProps> = ({ onSendMessage }) => {
           id={getUUID()}
           ref={textareaRef}
           value={input}
-          placeholder="Type your message..."
+          placeholder="傳訊息給 DSM Bot"
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
           className="w-full p-4 pr-12 rounded-3xl focus:outline-none resize-none bg-gray-100"

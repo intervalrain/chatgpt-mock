@@ -2,20 +2,30 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Avatar from '@/app/utils/Avatar';
-import { ChevronDown, Settings, HelpCircle, LogOut, ArrowRightToLine, ArrowLeftToLine, SquarePlus } from 'lucide-react';
+import { ChevronDown, Settings, LogOut, ArrowRightToLine, SquarePlus, UserPen, Bot, BotMessageSquare, BookPlus, Check } from 'lucide-react';
 import { mockUser } from '@/app/mock/userData';
 import { useSidebar } from '@/app/context/SidebarContext';
 import Menu from '../ui/Menu';
+import { useApp } from '@/app/context/AppContext';
+import { LlmModel } from '@/app/types';
 
 const Header: React.FC = () => {
-  const [chatMenuOpen, setChatMenuOpen] = useState(false);
+  const [modelMenuOpen, setModelMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { isCollpased, toggleSidebar } = useSidebar();
-  const chatButtonRef = useRef<HTMLButtonElement>(null);
+  const modelButtonRef = useRef<HTMLButtonElement>(null);
   const avatarButtonRef = useRef<HTMLButtonElement>(null);
+  const { model, setModel } = useApp(); 
 
-  const toggleChatMenu = () => setChatMenuOpen(!chatMenuOpen);
+  const toggleModelMenu = () => setModelMenuOpen(!modelMenuOpen);
   const toggleUserMenu = () => setUserMenuOpen(!userMenuOpen);
+
+  const llmOptions: LlmModel[] = ['GPT-3.5-turbo', 'GPT-4o-for-text', 'Mistral'];
+
+  const handleModelSelect = (model: LlmModel) => {
+    setModel(model);
+    setModelMenuOpen(false);
+  };
 
   return (
     <div className="flex justify-between items-center relative">
@@ -34,21 +44,31 @@ const Header: React.FC = () => {
             </div>
           )}
           <button 
-            ref={chatButtonRef}
+            ref={modelButtonRef}
             className="flex items-center p-2 font-semibold text-gray-600 rounded-md hover:bg-gray-100"
-            onClick={toggleChatMenu}
+            onClick={toggleModelMenu}
           >
-            ChatGPT
+            <BotMessageSquare className="mr-3 h-5 w-5"/><h2 className="text-xl text-gray-500">DSM Bot ({model})</h2>
             <ChevronDown className="ml-2" />
           </button>
           <Menu 
-            isOpen={chatMenuOpen} 
-            onClose={() => setChatMenuOpen(false)} 
+            isOpen={modelMenuOpen} 
+            onClose={() => setModelMenuOpen(false)} 
             align="left"
-            anchorEl={chatButtonRef.current}>
-            <a href="#" className="block m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">New chat</a>
-            <a href="#" className="block m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Clear conversations</a>
-            <a href="#" className="block m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Upgrade to Plus</a>
+            anchorEl={modelButtonRef.current}>
+            {llmOptions.map((currentModel) => (
+              <button
+                key={currentModel}
+                onClick={() => handleModelSelect(currentModel)}
+                className="flex w-11/12 items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem"
+              >
+                <div className="flex w-full items-center justify-between">
+                  <div>{currentModel}</div>
+                  <div>{currentModel === model && <Check className="h-4 w-4" />}</div>
+                </div>
+                 
+              </button>
+            ))}
           </Menu>
         </div>
       </div>
@@ -65,13 +85,21 @@ const Header: React.FC = () => {
           align="right"
           anchorEl={avatarButtonRef.current}>
           <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-            <Settings className="mr-3 h-5 w-5" /> Settings
+            <UserPen className="mr-3 h-5 w-5" /> 我的 GPT
           </a>
           <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-            <HelpCircle className="mr-3 h-5 w-5" /> Help
+            <Bot className="mr-3 h-5 w-5" /> 我的助理
           </a>
           <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-            <LogOut className="mr-3 h-5 w-5" /> Log out
+            <Settings className="mr-3 h-5 w-5" /> 設定
+          </a>
+          <div className="my-1 h-px bg-gray-200" role="none" />
+          <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+            <BookPlus className="mr-3 h-5 w-5" /> 申請文件
+          </a>
+          <div className="my-1 h-px bg-gray-200" role="none" />
+          <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+            <LogOut className="mr-3 h-5 w-5" /> 登出
           </a>
         </Menu>
       </div>

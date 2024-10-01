@@ -1,11 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Message } from "../types";
 import { getUUID } from "../utils/uuid";
-
-// const mockAIResponse = async (message: string): Promise<string> => {
-//     await new Promise(resolve => setTimeout(resolve, 1000));
-//     return `AI response to: "${message}"`;
-// };
 
 export const useChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -94,65 +89,6 @@ export const useChat = () => {
     },
     [messages]
   );
-
-  // useEffect(() => {
-  //     const initialMessages: Message[] = [
-  //         { id: getUUID(), content: "Hello! How can I help you today?", role: "assistant" },
-  //         { id: getUUID(), content: "What services do you offer?", role: "user" },
-  //         { id: getUUID(), content: "We offer a variety of services including web development, app development, and consulting.", role: "assistant" },
-  //         { id: getUUID(), content: "Can you help me with React?", role: "user" },
-  //         { id: getUUID(), content: "Sure! React is a powerful library for building user interfaces. What specifically would you like to know?", role: "assistant" },
-  //         { id: getUUID(), content: "I'm having trouble with state management.", role: "user" },
-  //         { id: getUUID(), content: "State management can be tricky. Have you tried using Redux or Context API?", role: "assistant" },
-  //         { id: getUUID(), content: "I've heard of Redux, but I'm not sure how to use it.", role: "user" },
-  //         { id: getUUID(), content: "Redux is a predictable state container for JavaScript apps. It helps manage the state across your entire app.", role: "assistant" },
-  //         { id: getUUID(), content: "That sounds helpful! Can you show me an example?", role: "user" },
-  //         { id: getUUID(), content: "Hello! How can I help you today?", role: "assistant" },
-  //     ];
-  //     setMessages(initialMessages);
-  // }, []);
-
-  useEffect(() => {
-    const initialMessages: Message[] = [
-        { 
-            id: getUUID(), 
-            content: `**Hello!** How can I help you today? 
-\`\`\`typescript
-function greet() {
-    console.log("Hello, world!");
-}
-\`\`\`
-Here is a simple code example:
-- **Bold**
-- _Italic_
-- \`inline code\`
-- [Markdown Link](https://example.com)
-            `, 
-            role: "assistant" 
-        },
-        { 
-            id: getUUID(), 
-            content: "What services do you offer? Can you explain more about **LaTeX**?", 
-            role: "user" 
-        },
-        { 
-            id: getUUID(), 
-            content: `We offer a variety of services including:
-- Web development
-- App development
-- **Consulting**
-
-As for LaTeX, here is an example of a mathematical expression:
-\`\`\`latex
-E = mc^2
-\`\`\`
-This is how we represent the famous equation!`, 
-            role: "assistant" 
-        },
-    ];
-    setMessages(initialMessages);
-}, []);
-
 
   return { messages, sendMessage, isLoading };
 };
