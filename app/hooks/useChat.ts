@@ -112,6 +112,48 @@ export const useChat = () => {
   //     setMessages(initialMessages);
   // }, []);
 
+  useEffect(() => {
+    const initialMessages: Message[] = [
+        { 
+            id: getUUID(), 
+            content: `**Hello!** How can I help you today? 
+\`\`\`typescript
+function greet() {
+    console.log("Hello, world!");
+}
+\`\`\`
+Here is a simple code example:
+- **Bold**
+- _Italic_
+- \`inline code\`
+- [Markdown Link](https://example.com)
+            `, 
+            role: "assistant" 
+        },
+        { 
+            id: getUUID(), 
+            content: "What services do you offer? Can you explain more about **LaTeX**?", 
+            role: "user" 
+        },
+        { 
+            id: getUUID(), 
+            content: `We offer a variety of services including:
+- Web development
+- App development
+- **Consulting**
+
+As for LaTeX, here is an example of a mathematical expression:
+\`\`\`latex
+E = mc^2
+\`\`\`
+This is how we represent the famous equation!`, 
+            role: "assistant" 
+        },
+    ];
+    setMessages(initialMessages);
+}, []);
+
+
   return { messages, sendMessage, isLoading };
 };
 

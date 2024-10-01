@@ -1,27 +1,92 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.markdown-body h1 {
+  @apply text-2xl font-bold mt-6 mb-4;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.markdown-body h2 {
+  @apply text-xl font-bold mt-5 mb-3;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.markdown-body h3 {
+  @apply text-lg font-bold mt-4 mb-2;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-} */
+.markdown-body p {
+  @apply my-2;
+}
+
+.markdown-body ul {
+  @apply list-disc list-inside my-2 ml-4;
+}
+
+.markdown-body ol {
+  @apply list-decimal list-inside my-2 ml-4;
+}
+
+.markdown-body li {
+  @apply my-1;
+}
+
+.markdown-body blockquote {
+  @apply border-l-4 border-gray-300 pl-4 italic my-2;
+}
+
+.markdown-body a {
+  @apply text-blue-600 hover:underline;
+}
+
+.markdown-body pre {
+  @apply my-2 p-2 rounded;
+}
+
+.markdown-body code {
+  @apply px-1 rounded;
+}
+
+.markdown-body table {
+  @apply w-full border-collapse border border-gray-300 my-4;
+}
+
+.markdown-body th,
+.markdown-body td {
+  @apply border border-gray-300 px-4 py-2;
+}
+
+.markdown-body th {
+  @apply bg-gray-100;
+}
+
+.markdown-body input[type="checkbox"] {
+  @apply mr-2;
+}
+
+.katex-display {
+  @apply my-2 overflow-x-auto;
+}
+
+.code-block {
+  @apply my-4;
+}
+
+.code-header {
+  @apply flex justify-between items-center bg-gray-700 text-gray-400 text-xs px-4 py-0 rounded-t;
+}
+
+.language {
+  @apply text-xs font-mono;
+}
+
+.copy-button {
+  @apply p-1 hover:bg-gray-600 rounded transition-colors duration-200;
+}
+
+.code-block pre {
+  @apply mt-0 rounded-t-none;
+}
