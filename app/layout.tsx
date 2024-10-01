@@ -1,11 +1,10 @@
-import type { Metadata } from "next";
+'use client';
+
 import "./styles/globals.css";
 import Sidebar from "./components/Sidebar/Sidebar";
+import { BrowserRouter as Router } from "react-router-dom";
+import { AppProvider } from "./context/AppProvider";
 
-export const metadata: Metadata = {
-  title: "ChatGPT Clone",
-  description: "A ChatGPT clone built with Next.js",
-};
 
 export default function RootLayout({
   children,
@@ -14,14 +13,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <div className="flex h-screen">
-          <Sidebar />
-          <main className="flex-1 overflow-hidden">
-            {children}
-          </main>
-        </div>
-      </body>
+      <Router>
+        <AppProvider>
+          <body>
+            <div className="flex h-screen">
+              <Sidebar />
+              <main className="flex-1 overflow-hidden">{children}</main>
+            </div>
+          </body>
+        </AppProvider>
+      </Router>
     </html>
   );
 }

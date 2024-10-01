@@ -8,7 +8,7 @@ export const mockConversations: Conversation[] = [
   { id: "1", title: "AI Ethics Discussion", date: new Date() },
   {
     id: "2",
-    title: "Machine Learning Basics",
+    title: "Machine Learning Basics and Machine Learning",
     date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
   },
   {
