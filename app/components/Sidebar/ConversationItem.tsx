@@ -1,25 +1,29 @@
 "use client";
 
-import { Conversation } from "@/app/mock/conversationData";
+import { Conversation } from "@/app/types";
 import Link from "next/link";
 import React, { useState } from "react";
 import { Ellipsis } from "lucide-react";
 
 interface ConversationItemProps {
   conversation: Conversation;
+  onClick: () => void;
+  active?: boolean;
 }
 
 const ConversationItem: React.FC<ConversationItemProps> = ({
   conversation,
+  onClick,
+  active,
 }) => {
   const [showEllipsis, setShowEllipsis] = useState(false);
 
   return (
-    <Link
-      href={`/chat/${conversation.id}`}
-      className="block py-2 hover:bg-gray-200 cursor-pointer rounded-md mx-4"
+    <div
+      className={`block py-2 hover:bg-gray-200 cursor-pointer rounded-md mx-4 ${active && "bg-gray-200"}`}
       onMouseEnter={() => setShowEllipsis(true)}
       onMouseLeave={() => setShowEllipsis(false)}
+      onClick={onClick}
     >
       <div className="flex justify-between items-center">
         <div className="text-sm px-2 text-ellipsis text-nowrap overflow-hidden">
@@ -29,7 +33,7 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
           {showEllipsis && <Ellipsis size={16} />}
         </button>
       </div>
-    </Link>
+    </div>
   );
 };
 

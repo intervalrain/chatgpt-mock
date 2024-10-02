@@ -1,12 +1,37 @@
-import { useCallback, useState } from "react";
-import { Message } from "../types";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Conversation, Message } from "../types";
 import { getUUID } from "../utils/uuid";
 import { useApp } from "../context/AppContext";
+import { useConversation } from "../context/ConversationContext";
 
 export const useChat = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { model } = useApp();
+  const {
+    conversations,
+    currentConversationId,
+    addConversation,
+    addMessageToConversation,
+    setCurrentConversationId,
+    updateConversationTitle,
+    updateMessage,
+  } = useConversation();
+
+  const currentMessages = currentConversationId 
+    ? conversations.find((c) => c.id === currentConversationId)?.messages || []
+    : [];
+
+  const getTitle = (content: string): string => {
+    const words = content.split(" ");
+    let title = "";
+    for (const word of words) {
+      if (title.length > 32) {
+        break;
+      }
+      title += " " + word;
+    }
+    return title.trim();
+  }
 
   const sendMessage = useCallback(
     async (content: string) => {
@@ -15,7 +40,26 @@ export const useChat = () => {
         content,
         role: "user",
       };
-      setMessages((prevMessages) => [...prevMessages, userMessage]);
+
+      let conversationId = currentConversationId;
+      const title = getTitle(content);
+      if (!conversationId) {
+        const newConversation: Conversation = {
+          id: getUUID(),
+          title: title,
+          messages: [userMessage],
+          date: new Date(),
+        };
+        addConversation(newConversation);
+        conversationId = newConversation.id;
+        setCurrentConversationId(conversationId);
+      } else {
+        if (currentMessages.length === 1) {
+          updateConversationTitle(conversationId, title);
+        }
+        addMessageToConversation(conversationId, userMessage);
+      }
+
       setIsLoading(true);
 
       try {
@@ -38,6 +82,13 @@ export const useChat = () => {
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
 
+        let assistantMessage: Message = {
+          id: getUUID(),
+          content: "",
+          role: "assistant",
+        }
+        addMessageToConversation(conversationId!, assistantMessage);
+
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
@@ -49,27 +100,8 @@ export const useChat = () => {
             if (line.trim() === "") continue;
             const parsedLine = JSON.parse(line);
             if (parsedLine.response) {
-              setMessages((prevMessages) => {
-                const lastMessage = prevMessages[prevMessages.length - 1];
-                if (lastMessage.role === "assistant") {
-                  return [
-                    ...prevMessages.slice(0, -1),
-                    {
-                      ...lastMessage,
-                      content: lastMessage.content + parsedLine.response,
-                    },
-                  ];
-                } else {
-                  return [
-                    ...prevMessages,
-                    {
-                      id: getUUID(),
-                      role: "assistant",
-                      content: parsedLine.response,
-                    },
-                  ];
-                }
-              });
+              assistantMessage.content += parsedLine.response;
+              updateMessage(currentConversationId!, assistantMessage.content);
             }
           }
         }
@@ -79,10 +111,10 @@ export const useChat = () => {
         setIsLoading(false);
       }
     },
-    [model, messages]
+    [model, currentConversationId, addConversation, addMessageToConversation, updateMessage]
   );
 
-  return { messages, sendMessage, isLoading };
+  return { messages: currentMessages, sendMessage, isLoading };
 };
 
 export default useChat;

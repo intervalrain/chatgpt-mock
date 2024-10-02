@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp } from 'lucide-react';
 import { getUUID } from '@/app/utils/uuid';
+import useChat from '@/app/hooks/useChat';
 
 interface InputAreaProps {
   onSendMessage: (content: string) => void;
@@ -9,9 +10,10 @@ interface InputAreaProps {
 const InputArea: React.FC<InputAreaProps> = ({ onSendMessage }) => {
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { isLoading } = useChat();
 
   const handleSend = () => {
-    if (input.trim()) {
+    if (!isLoading && input.trim()) {
       onSendMessage(input.trim());
       setInput('');
     }
@@ -45,7 +47,7 @@ const InputArea: React.FC<InputAreaProps> = ({ onSendMessage }) => {
           value={input}
           placeholder="傳訊息給 DSM Bot"
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           className="w-full p-4 pr-12 rounded-3xl focus:outline-none resize-none bg-gray-100"
           rows={1}
         />
@@ -53,7 +55,7 @@ const InputArea: React.FC<InputAreaProps> = ({ onSendMessage }) => {
           onClick={handleSend}
           className={`${buttonBaseClasses} ${buttonActiveClasses}`}
           aria-label="Send message"
-          disabled={!input.trim()}
+          disabled={!input.trim() || isLoading}
         >
           <ArrowUp size={20} />
         </button>

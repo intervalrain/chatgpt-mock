@@ -2,19 +2,26 @@
 
 import React from "react";
 import {
-  ArrowLeftToLine,
-  SquarePlus,
+  PanelLeft,
   Bot,
   SquareLibrary,
+  PenSquare,
 } from "lucide-react";
 import ConversationList from "./ConversationList";
 import { useNavigate } from "react-router-dom";
 import { useSidebar } from "@/app/context/SidebarContext";
 import SidebarItem from "./SidebarItem";
+import { useConversation } from "@/app/context/ConversationContext";
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const { isCollpased, toggleSidebar } = useSidebar();
+  const { createNewChat } = useConversation();
+
+  const handleNewChat = () => {
+    createNewChat();
+    navigate("/");
+  }
 
   if (isCollpased) {
     return (
@@ -29,10 +36,12 @@ const Sidebar: React.FC = () => {
           onClick={toggleSidebar}
           className="p-2 hover:bg-gray-200 rounded-md"
         >
-          <ArrowLeftToLine className="text-gray-600" />
+          <PanelLeft className="text-gray-600" />
         </button>
-        <button className="p-2 hover:bg-gray-200 rounded-md">
-          <SquarePlus className="text-gray-600" />
+        <button 
+          onClick={handleNewChat}
+          className="p-2 hover:bg-gray-200 rounded-md">
+          <PenSquare className="text-gray-600" />
         </button>
       </div>
       <div className="p-2">

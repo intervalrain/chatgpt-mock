@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Avatar from '@/app/utils/Avatar';
-import { ChevronDown, Settings, LogOut, ArrowRightToLine, SquarePlus, UserPen, Bot, BookPlus, Check } from 'lucide-react';
+import { ChevronDown, Settings, LogOut, PanelLeft, PenSquare, UserPen, Bot, BookPlus, Check } from 'lucide-react';
 import { mockUser } from '@/app/mock/userData';
 import { useSidebar } from '@/app/context/SidebarContext';
 import Menu from '../ui/Menu';
@@ -36,10 +36,10 @@ const Header: React.FC = () => {
               <button 
                 onClick={toggleSidebar}
                 className="p-2 hover:bg-gray-200 rounded-md">
-                <ArrowRightToLine className="text-gray-600" />
+                <PanelLeft className="text-gray-600" />
               </button>
               <button className="p-2 hover:bg-gray-200 rounded-md">
-                <SquarePlus className="text-gray-600" />
+                <PenSquare className="text-gray-600" />
               </button>
             </div>
           )}
