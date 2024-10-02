@@ -1,10 +1,12 @@
 import { useCallback, useState } from "react";
 import { Message } from "../types";
 import { getUUID } from "../utils/uuid";
+import { useApp } from "../context/AppContext";
 
 export const useChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { model } = useApp();
 
   const sendMessage = useCallback(
     async (content: string) => {
@@ -17,21 +19,13 @@ export const useChat = () => {
       setIsLoading(true);
 
       try {
-        const prompt =
-          messages
-            .map(
-              (msg) =>
-                `${msg.role === "user" ? "Human" : "Assistant"}: ${msg.content}`
-            )
-            .join("\n") + `\nHuman: ${content}\Assistant:`;
-
-        const response = await fetch("http://localhost:11434/api/generate", {
+        const response = await fetch("/api/ollama", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "mistral",
+            model: model,
             prompt: content,
             stream: true,
           }),
@@ -43,7 +37,6 @@ export const useChat = () => {
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
-        let fullResponse = "";
 
         while (true) {
           const { done, value } = await reader.read();
@@ -56,7 +49,6 @@ export const useChat = () => {
             if (line.trim() === "") continue;
             const parsedLine = JSON.parse(line);
             if (parsedLine.response) {
-              fullResponse += parsedLine.response;
               setMessages((prevMessages) => {
                 const lastMessage = prevMessages[prevMessages.length - 1];
                 if (lastMessage.role === "assistant") {
@@ -71,7 +63,7 @@ export const useChat = () => {
                   return [
                     ...prevMessages,
                     {
-                      id: Date.now().toString(),
+                      id: getUUID(),
                       role: "assistant",
                       content: parsedLine.response,
                     },
@@ -87,7 +79,7 @@ export const useChat = () => {
         setIsLoading(false);
       }
     },
-    [messages]
+    [model, messages]
   );
 
   return { messages, sendMessage, isLoading };

@@ -20,7 +20,7 @@ const Header: React.FC = () => {
   const toggleModelMenu = () => setModelMenuOpen(!modelMenuOpen);
   const toggleUserMenu = () => setUserMenuOpen(!userMenuOpen);
 
-  const llmOptions: LlmModel[] = ['GPT-3.5-turbo', 'GPT-4o-for-text', 'Mistral'];
+  const llmOptions: LlmModel[] = ['mistral',] // 'llama2'];
 
   const handleModelSelect = (model: LlmModel) => {
     setModel(model);

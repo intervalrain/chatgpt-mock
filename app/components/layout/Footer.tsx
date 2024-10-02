@@ -16,7 +16,7 @@ const Footer = () => {
       <div className="w-8" />
       <div className="text-center flex-grow">
         <div className="text-gray-400 text-xs">
-          ChatGPT 可能會發生錯誤。請查核重要資訊。
+          DSM Bot 可能會發生錯誤。請查核重要資訊。
         </div>
       </div>
       <div className="w-8 flex justify-end">

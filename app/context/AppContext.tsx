@@ -9,7 +9,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [model, setModel] = useState<LlmModel>('Mistral');
+    const [model, setModel] = useState<LlmModel>('mistral');
 
     return (
         <AppContext.Provider value={{ model, setModel }}>

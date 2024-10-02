@@ -4,4 +4,4 @@ export interface Message {
     role: "user" | "assistant";
 }
 
-export type LlmModel = "GPT-3.5-turbo" | "GPT-4o-for-text" | "Mistral";
+export type LlmModel = "mistral"; // | "llama2";
