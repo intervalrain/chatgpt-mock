@@ -9,6 +9,7 @@ export interface Conversation {
     title: string;
     messages: Message[];
     date: Date;
+    archived?: boolean;
   }
 
 export type LlmModel = "mistral"; // | "llama2";

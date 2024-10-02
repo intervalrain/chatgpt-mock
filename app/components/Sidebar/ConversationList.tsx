@@ -11,7 +11,6 @@ const ConversationList: React.FC = () => {
     const today = new Date();
     const oneDay = 24 * 60 * 60 * 1000;
 
-    // Sort conversations by date in descending order
     const sortedConversations = [...conversations].sort((a, b) => 
       b.date.getTime() - a.date.getTime()
     );
@@ -22,7 +21,9 @@ const ConversationList: React.FC = () => {
       );
 
       let group: string;
-      if (diffDays === 0) {
+      if (conversation.archived) { 
+        group = "已封存";
+      } else if (diffDays === 0) {
         group = "今天";
       } else if (diffDays === 1) {
         group = "昨天";
@@ -46,16 +47,15 @@ const ConversationList: React.FC = () => {
     return grouped;
   }, [conversations]);
 
-  // Sort group keys to ensure correct order
   const sortedGroups = useMemo(() => {
-    const groupOrder = ["今天", "昨天", "過去 7 天", "過去 30 天"];
+    const groupOrder = ["已封存", "今天", "昨天", "過去 7 天", "過去 30 天"];
     return Object.keys(groupConversationsByDate).sort((a, b) => {
       const indexA = groupOrder.indexOf(a);
       const indexB = groupOrder.indexOf(b);
       if (indexA !== -1 && indexB !== -1) return indexA - indexB;
       if (indexA !== -1) return -1;
       if (indexB !== -1) return 1;
-      return b.localeCompare(a); // For month/year groups
+      return b.localeCompare(a);
     });
   }, [groupConversationsByDate]);
 

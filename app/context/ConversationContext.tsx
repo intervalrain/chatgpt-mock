@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { Conversation, Message } from "../types";
 import { getUUID } from "../utils/uuid";
@@ -11,7 +13,9 @@ interface ConversationContextType {
   switchConversation: (id: string) => void;
   addMessageToConversation: (id: string, message: Message) => void;
   updateMessage: (id: string, content: string) => void;
+  removeConversation: (id: string) => void;
   createNewChat: () => void;
+  archiveConversation: (id: string) => void;
 }
 
 const ConversationContext = createContext<ConversationContextType | undefined>(undefined);
@@ -50,6 +54,12 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode}> = ({ c
     ));
   }, []);
 
+  const removeConversation = useCallback((id: string) => {
+    setConversations(prevConversations => 
+      prevConversations.filter(conversation => conversation.id !== id)
+    );
+  }, []);
+
   const createNewChat = useCallback(() => {
     const newConversation: Conversation = {
       id: getUUID(),
@@ -62,6 +72,12 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode}> = ({ c
       date: new Date(),
     };
     addConversation(newConversation);
+  }, []);
+
+  const archiveConversation = useCallback((id: string) => {
+    setConversations(prev => prev.map(conv => 
+      conv.id === id ? {...conv, archived: !conv.archived } : conv
+    ));
   }, []);
 
   useEffect(() => {
@@ -80,7 +96,9 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode}> = ({ c
       switchConversation,
       addMessageToConversation,
       updateMessage,
+      removeConversation,
       createNewChat,
+      archiveConversation,
     }}>
       {children}
     </ConversationContext.Provider>
