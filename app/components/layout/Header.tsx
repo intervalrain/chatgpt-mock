@@ -8,6 +8,8 @@ import { useSidebar } from '@/app/context/SidebarContext';
 import Menu from '../ui/Menu';
 import { useApp } from '@/app/context/AppContext';
 import { LlmModel } from '@/app/types';
+import { useConversation } from '@/app/context/ConversationContext';
+import { useNavigate } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const [modelMenuOpen, setModelMenuOpen] = useState(false);
@@ -16,7 +18,8 @@ const Header: React.FC = () => {
   const modelButtonRef = useRef<HTMLButtonElement>(null);
   const avatarButtonRef = useRef<HTMLButtonElement>(null);
   const { model, setModel } = useApp(); 
-
+  const navigate = useNavigate();
+  
   const toggleModelMenu = () => setModelMenuOpen(!modelMenuOpen);
   const toggleUserMenu = () => setUserMenuOpen(!userMenuOpen);
 
@@ -26,6 +29,13 @@ const Header: React.FC = () => {
     setModel(model);
     setModelMenuOpen(false);
   };
+
+  const { createNewChat } = useConversation();
+
+  const handleNewChat = () => {
+    createNewChat();
+    navigate("/");
+  }
 
   return (
     <div className="flex justify-between items-center relative">
@@ -38,7 +48,9 @@ const Header: React.FC = () => {
                 className="p-2 hover:bg-gray-200 rounded-md">
                 <PanelLeft className="text-gray-600" />
               </button>
-              <button className="p-2 hover:bg-gray-200 rounded-md">
+              <button 
+                onClick={handleNewChat}
+                className="p-2 hover:bg-gray-200 rounded-md">
                 <PenSquare className="text-gray-600" />
               </button>
             </div>

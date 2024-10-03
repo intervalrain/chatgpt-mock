@@ -44,7 +44,7 @@ const Sidebar: React.FC = () => {
           <PenSquare className="text-gray-600" />
         </button>
       </div>
-      <div className="p-2">
+      <div className="p-2 mx-2">
         <SidebarItem icon={<Bot size={20}/>} text="DSM Bot" onClick={() => navigate("../")} />
         <SidebarItem icon={<SquareLibrary size={20}/>} text="DSM Documents" onClick={() => {}} />
       </div>
