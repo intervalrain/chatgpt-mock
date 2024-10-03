@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { Conversation, Message } from "../types";
 import { getUUID } from "../utils/uuid";
+import { useApp } from "./AppContext";
 
 interface ConversationContextType {
   conversations: Conversation[];
@@ -16,13 +17,28 @@ interface ConversationContextType {
   removeConversation: (id: string) => void;
   createNewChat: () => void;
   archiveConversation: (id: string) => void;
+  cleanUpOldConversations: () => void;
 }
 
 const ConversationContext = createContext<ConversationContextType | undefined>(undefined);
+const LOCAL_STORAGE_KEY = "dsmbot_conversations";
 
 export const ConversationProvider: React.FC<{ children: React.ReactNode}> = ({ children }) => {
-	const [conversations, setConversations] = useState<Conversation[]>([]);
+	const [conversations, setConversations] = useState<Conversation[]>(() => {
+    if (typeof window !== 'undefined') {
+      const storedConversations = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (storedConversations) {
+        return JSON.parse(storedConversations, (key, value) => {
+          return key === 'date' 
+            ? new Date(value)
+            : value;
+        })
+      }
+    }
+    return [];
+  });
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const { maxConversations, setMaxConversations } = useApp();
 
   const addConversation = useCallback((conversation: Conversation) => {
 		setConversations(prev => [...prev, conversation]);
@@ -72,7 +88,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode}> = ({ c
       date: new Date(),
     };
     addConversation(newConversation);
-  }, []);
+  }, [addConversation]);
 
   const archiveConversation = useCallback((id: string) => {
     setConversations(prev => prev.map(conv => 
@@ -80,11 +96,29 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode}> = ({ c
     ));
   }, []);
 
+  const cleanUpOldConversations = useCallback(() => {
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() - 30);
+
+    setConversations(prev =>
+      prev.filter(conv => new Date(conv.date) > dueDate && !conv.archived)
+          .slice(-maxConversations)
+    );
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(conversations));
+    }
+  }, [conversations]);
+
   useEffect(() => {
     if (conversations.length === 0) {
       createNewChat();
+    } else if (!currentConversationId) {
+      setCurrentConversationId(conversations[0].id);
     }
-  }, []);
+  }, [conversations, currentConversationId, createNewChat]);
 
   return (
     <ConversationContext.Provider value={{
@@ -99,6 +133,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode}> = ({ c
       removeConversation,
       createNewChat,
       archiveConversation,
+      cleanUpOldConversations,
     }}>
       {children}
     </ConversationContext.Provider>
