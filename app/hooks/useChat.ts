@@ -54,6 +54,7 @@ export const useChat = () => {
         conversationId = newConversation.id;
         setCurrentConversationId(conversationId);
       } else {
+        const currentChat = conversations.find((c) => c.id === currentConversationId)?.messages || [];
         if (currentMessages.length === 1) {
           updateConversationTitle(conversationId, title);
         }
