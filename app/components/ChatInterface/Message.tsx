@@ -21,6 +21,7 @@ const MessagePage: React.FC<Message> = ({ id, content, role}) => {
 		setTimeout(() => setCopiedCode(null), 2000);
 		});
 	};
+	
   	return (
 		<div
 			key={id}
