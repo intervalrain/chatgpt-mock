@@ -116,7 +116,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode}> = ({ c
     if (conversations.length === 0) {
       createNewChat();
     } else if (!currentConversationId) {
-      setCurrentConversationId(conversations[0].id);
+      setCurrentConversationId(conversations[conversations.length-1].id);
     }
   }, [conversations, currentConversationId, createNewChat]);
 
