@@ -4,10 +4,9 @@ import "./styles/globals.css";
 import Sidebar from "./components/Sidebar/Sidebar";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ServiceProvider } from "./context/ServiceProvider";
-import { SidebarProvider } from "./context/SidebarContext";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
-
+import DialogManager from "./components/layout/DialogManager";
 
 export default function RootLayout({
   children,
@@ -27,6 +26,7 @@ export default function RootLayout({
                   {children}
                   <Footer />
                 </div>
+                <DialogManager />
               </main>
             </div>
           </body>

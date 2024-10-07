@@ -5,12 +5,9 @@ import Avatar from "@/app/utils/Avatar";
 import {
   ChevronDown,
   Settings,
-  LogOut,
   PanelLeft,
   PenSquare,
-  UserPen,
   Bot,
-  BookPlus,
   Check,
 } from "lucide-react";
 import { mockUser } from "@/app/mock/userData";
@@ -20,20 +17,9 @@ import { useApp } from "@/app/context/AppContext";
 import { LlmModel } from "@/app/types";
 import { useConversation } from "@/app/context/ConversationContext";
 import { useNavigate } from "react-router-dom";
-import AssistantDialog from "../Dialogs/AssistantDialog";
-import SettingsDialog from "../Dialogs/SettingsDialog";
-import { useHeader } from "@/app/context/HeaderContext";
+import { useDialog } from "@/app/context/DialogContext";
 
 const Header: React.FC = () => {
-  const {
-    assistantDialogOpen,
-    settingsDialogOpen,
-    openAssistantDialog,
-    closeAssistantDialog,
-    openSettingsDialog,
-    closeSettingsDialog,
-  } = useHeader();
-
   const [modelMenuOpen, setModelMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { isCollpased, toggleSidebar } = useSidebar();
@@ -44,6 +30,8 @@ const Header: React.FC = () => {
 
   const toggleModelMenu = () => setModelMenuOpen(!modelMenuOpen);
   const toggleUserMenu = () => setUserMenuOpen(!userMenuOpen);
+
+  const { openDialog } = useDialog();
 
   const llmOptions: LlmModel[] = ["mistral"]; // 'llama2'];
 
@@ -58,21 +46,6 @@ const Header: React.FC = () => {
     createNewChat();
     navigate("/");
   };
-
-  const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      closeAssistantDialog();
-      closeSettingsDialog();
-    }
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [handleKeyDown]);
 
   return (
     <div className="flex justify-between items-center relative">
@@ -137,12 +110,9 @@ const Header: React.FC = () => {
           align="right"
           anchorEl={avatarButtonRef.current}
         >
-          {/* <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-            <UserPen className="mr-3 h-5 w-5" /> 我的 GPT
-          </a> */}
           <button
             onClick={() => {
-              openAssistantDialog();
+              openDialog("assistant");
               setUserMenuOpen(false);
             }}
             className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 w-11/12"
@@ -152,32 +122,15 @@ const Header: React.FC = () => {
 
           <button
             onClick={() => {
-              openSettingsDialog();
+              openDialog("settings");
               setUserMenuOpen(false);
             }}
             className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 w-11/12"
           >
             <Settings className="mr-3 h-5 w-5" /> 設定
           </button>
-
-          {/* <div className="my-1 h-px bg-gray-200" role="none" /> */}
-          {/* <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-            <BookPlus className="mr-3 h-5 w-5" /> 申請文件
-          </a> */}
-          {/* <div className="my-1 h-px bg-gray-200" role="none" />
-          <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-            <LogOut className="mr-3 h-5 w-5" /> 登出
-          </a> */}
         </Menu>
       </div>
-      <AssistantDialog
-        isOpen={assistantDialogOpen}
-        onClose={closeAssistantDialog}
-      />
-      <SettingsDialog
-        isOpen={settingsDialogOpen}
-        onClose={closeSettingsDialog}
-      />
     </div>
   );
 };

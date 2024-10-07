@@ -24,6 +24,21 @@ export interface Assistant {
   systemPrompt: string;
 }
 
+export interface DSM {
+  id: string;
+  name: string;
+  generation: string;
+  technology: string;
+  category: string;
+  platform: string;
+  revisionVersion: string;
+  customMark: string;
+}
+
+export interface DocumentResponse {
+  documents: DSM[];
+}
+
 export const themes = [
   { value: 'light', label: '淺色' },
   { value: 'dark', label: '深色' }
