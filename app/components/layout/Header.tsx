@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Avatar from '@/app/utils/Avatar';
 import { ChevronDown, Settings, LogOut, PanelLeft, PenSquare, UserPen, Bot, BookPlus, Check } from 'lucide-react';
 import { mockUser } from '@/app/mock/userData';
@@ -10,6 +10,7 @@ import { useApp } from '@/app/context/AppContext';
 import { LlmModel } from '@/app/types';
 import { useConversation } from '@/app/context/ConversationContext';
 import { useNavigate } from 'react-router-dom';
+import AssistantDialog from '../Dialogs/AssistantDialog';
 
 const Header: React.FC = () => {
   const [modelMenuOpen, setModelMenuOpen] = useState(false);
@@ -20,6 +21,8 @@ const Header: React.FC = () => {
   const { model, setModel } = useApp(); 
   const navigate = useNavigate();
   
+  const [assistantDialogOpen, setAssistantDialogOpen] = useState(false);
+
   const toggleModelMenu = () => setModelMenuOpen(!modelMenuOpen);
   const toggleUserMenu = () => setUserMenuOpen(!userMenuOpen);
 
@@ -36,6 +39,22 @@ const Header: React.FC = () => {
     createNewChat();
     navigate("/");
   }
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setAssistantDialogOpen(false);
+      }
+    }, []
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   return (
     <div className="flex justify-between items-center relative">
@@ -96,25 +115,35 @@ const Header: React.FC = () => {
           onClose={() => setUserMenuOpen(false)} 
           align="right"
           anchorEl={avatarButtonRef.current}>
-          <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+          {/* <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
             <UserPen className="mr-3 h-5 w-5" /> 我的 GPT
-          </a>
-          <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+          </a> */}
+          <button
+            onClick={() => {
+              setAssistantDialogOpen(true);
+              setUserMenuOpen(false);
+            }}
+            className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 w-11/12"
+          >
             <Bot className="mr-3 h-5 w-5" /> 我的助理
-          </a>
+          </button>
           <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
             <Settings className="mr-3 h-5 w-5" /> 設定
           </a>
-          <div className="my-1 h-px bg-gray-200" role="none" />
-          <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+          {/* <div className="my-1 h-px bg-gray-200" role="none" /> */}
+          {/* <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
             <BookPlus className="mr-3 h-5 w-5" /> 申請文件
-          </a>
-          <div className="my-1 h-px bg-gray-200" role="none" />
+          </a> */}
+          {/* <div className="my-1 h-px bg-gray-200" role="none" />
           <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
             <LogOut className="mr-3 h-5 w-5" /> 登出
-          </a>
+          </a> */}
         </Menu>
       </div>
+      <AssistantDialog
+        isOpen={assistantDialogOpen}
+        onClose={() => setAssistantDialogOpen(false)}
+      />
     </div>
   );
 };

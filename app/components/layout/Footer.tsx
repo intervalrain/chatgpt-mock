@@ -5,10 +5,10 @@ import Menu from "../ui/Menu";
 import { HelpCircle, Keyboard, LogOut, Settings } from "lucide-react";
 import { useConversation } from "@/app/context/ConversationContext";
 import { useSidebar } from "@/app/context/SidebarContext";
-import HotkeyDialog from "../Info/HotkeyDialog";
-import VersionDialog from "../Info/VersionDialog";
-import PolicyDialog from "../Info/PolicyDialog";
-import ManualDialog from "../Info/ManualDialog";
+import HotkeyDialog from "../Dialogs/HotkeyDialog";
+import VersionDialog from "../Dialogs/VersionDialog";
+import PolicyDialog from "../Dialogs/PolicyDialog";
+import ManualDialog from "../Dialogs/ManualDialog";
 
 const Footer = () => {
   const [infoMenuOpen, setInfoMenuOpen] = useState(false);

@@ -13,3 +13,12 @@ export interface Conversation {
   }
 
 export type LlmModel = "mistral"; // | "llama2";
+
+export interface Assistant {
+  id: string;
+  emoji?: string;
+  title: string;
+  description: string;
+  author: string;
+  systemPrompt: string;
+}

@@ -5,6 +5,8 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ServiceProvider } from "./context/ServiceProvider";
 import { SidebarProvider } from "./context/SidebarContext";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
 
 
 export default function RootLayout({
@@ -19,7 +21,13 @@ export default function RootLayout({
           <body>
             <div className="flex h-screen">
               <Sidebar />
-              <main className="flex-1 overflow-hidden">{children}</main>
+              <main className="flex-1 overflow-hidden">
+                <div className="flex flex-col h-screen">
+                  <Header />
+                  {children}
+                  <Footer />
+                </div>
+              </main>
             </div>
           </body>
         </ServiceProvider>
