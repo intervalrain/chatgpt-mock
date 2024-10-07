@@ -11,6 +11,7 @@ import { LlmModel } from '@/app/types';
 import { useConversation } from '@/app/context/ConversationContext';
 import { useNavigate } from 'react-router-dom';
 import AssistantDialog from '../Dialogs/AssistantDialog';
+import SettingsDialog from '../Dialogs/SettingsDialog';
 
 const Header: React.FC = () => {
   const [modelMenuOpen, setModelMenuOpen] = useState(false);
@@ -22,6 +23,7 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   
   const [assistantDialogOpen, setAssistantDialogOpen] = useState(false);
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
 
   const toggleModelMenu = () => setModelMenuOpen(!modelMenuOpen);
   const toggleUserMenu = () => setUserMenuOpen(!userMenuOpen);
@@ -44,6 +46,7 @@ const Header: React.FC = () => {
     (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setAssistantDialogOpen(false);
+        setSettingsDialogOpen(false);
       }
     }, []
   );
@@ -127,9 +130,17 @@ const Header: React.FC = () => {
           >
             <Bot className="mr-3 h-5 w-5" /> 我的助理
           </button>
-          <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+
+          <button
+            onClick={() => {
+              setSettingsDialogOpen(true);
+              setUserMenuOpen(false);
+            }}
+            className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 w-11/12"
+          >
             <Settings className="mr-3 h-5 w-5" /> 設定
-          </a>
+          </button>
+
           {/* <div className="my-1 h-px bg-gray-200" role="none" /> */}
           {/* <a href="#" className="flex items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
             <BookPlus className="mr-3 h-5 w-5" /> 申請文件
@@ -143,6 +154,10 @@ const Header: React.FC = () => {
       <AssistantDialog
         isOpen={assistantDialogOpen}
         onClose={() => setAssistantDialogOpen(false)}
+      />
+      <SettingsDialog
+        isOpen={settingsDialogOpen}
+        onClose={() => setSettingsDialogOpen(false)}
       />
     </div>
   );

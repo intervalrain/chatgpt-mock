@@ -22,6 +22,24 @@ const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, title, content }) => {
 
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dialogRef.current && !dialogRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
       setCopiedCode(text);
@@ -31,7 +49,7 @@ const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, title, content }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl p-6 max-w-2xl w-full h-3/4">
+      <div ref={dialogRef} className="bg-white rounded-2xl p-6 max-w-2xl w-full h-3/4">
 				<div className="flex justify-between items-center mb-4">
 					<h2 className="text-2xl font-semibold">{title}</h2>
 					<button
@@ -42,7 +60,7 @@ const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, title, content }) => {
 					</button>
 				</div>
 				<div className="my-4 h-px bg-gray-200" role="none" />
-        <div className="overflow-y-auto w-full max-h-[560px]">
+        <div className="overflow-y-auto w-full max-h-[480px]">
           <div className="markdown-body">
             <ReactMarkdown
               remarkPlugins={[remarkMath, remarkGfm]}

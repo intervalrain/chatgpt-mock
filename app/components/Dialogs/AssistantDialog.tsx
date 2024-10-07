@@ -18,37 +18,32 @@ const AssistantDialog: React.FC<AssistantDialogProps> = ({
   if (!isOpen) return null;
 
   const [loading, setLoading] = useState(false);
-  const [assistants, setAssistants] = useState<Assistant[]>([]);
+  const { activeAssistant, setActiveAssistant, assistants } = useAssistant();
   const [editingAssistant, setEditingAssistant] = useState<Assistant | null>(
     null
   );
-  const { activeAssistant, setActiveAssistant } = useAssistant();
 
   const [showRightArrow, setShowRightArrow] = useState(false);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      fetchAssistants();
-    }
-  }, [isOpen]);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
-  const fetchAssistants = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/assistants");
-      if (!response.ok) {
-        throw new Error("Failed to fetch assistants");
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dialogRef.current && !dialogRef.current.contains(event.target as Node)) {
+        onClose();
       }
-      const data = await response.json();
-      setAssistants(data);
-    } catch (error) {
-      console.error("Error fetching assistants:", error);
-    } finally {
-      setLoading(false);
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
     }
-  };
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -90,7 +85,7 @@ const AssistantDialog: React.FC<AssistantDialogProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl p-6 max-w-2xl w-full">
+      <div ref={dialogRef} className="bg-white rounded-2xl p-6 max-w-2xl w-full">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">我的助理</h2>
           <button
@@ -107,7 +102,7 @@ const AssistantDialog: React.FC<AssistantDialogProps> = ({
           ) : (
             <div
               ref={scrollContainerRef}
-              className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide"
+              className="p-2 flex space-x-4 overflow-x-auto scrollbar-hide"
               onScroll={() => {
                 if (scrollContainerRef.current) {
                   const { scrollWidth, clientWidth, scrollLeft } =

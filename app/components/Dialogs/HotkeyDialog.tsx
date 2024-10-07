@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 interface Hotkey {
 	key: string[];
@@ -14,6 +14,25 @@ interface HotkeyDialogProps {
 const HotkeyDialog: React.FC<HotkeyDialogProps> = ({ isOpen, onClose, hotkeys}) => {
 	if (!isOpen) return null;
 
+
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dialogRef.current && !dialogRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+
   const renderKeyCombo = (keyCombo: string[]) => {
     return keyCombo.map((key, index) => (
       <kbd key={index} className="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-white border border-gray-200 rounded-md">
@@ -24,7 +43,7 @@ const HotkeyDialog: React.FC<HotkeyDialogProps> = ({ isOpen, onClose, hotkeys}) 
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl p-6 max-w-2xl w-full">
+      <div ref={dialogRef} className="bg-white rounded-2xl p-6 max-w-2xl w-full">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">鍵盤快捷鍵</h2>
           <button

@@ -22,3 +22,14 @@ export interface Assistant {
   author: string;
   systemPrompt: string;
 }
+
+export const themes = [
+  { value: 'light', label: '淺色' },
+  { value: 'dark', label: '深色' }
+];
+
+export const languages = [
+  { value: 'zh-TW', label: '繁體中文'},
+  { value: 'en', label: 'English' }
+]
+
