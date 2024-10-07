@@ -9,6 +9,7 @@ import HotkeyDialog from "../Dialogs/HotkeyDialog";
 import VersionDialog from "../Dialogs/VersionDialog";
 import PolicyDialog from "../Dialogs/PolicyDialog";
 import ManualDialog from "../Dialogs/ManualDialog";
+import { useHeader } from "@/app/context/HeaderContext";
 
 const Footer = () => {
   const [infoMenuOpen, setInfoMenuOpen] = useState(false);
@@ -23,7 +24,9 @@ const Footer = () => {
     removeConversation,
     currentConversationId,
     setCurrentConversationId,
+    setInput,
   } = useConversation();
+  const { openAssistantDialog, openSettingsDialog } = useHeader();
   const { toggleSidebar } = useSidebar();
 
   const isMac =
@@ -38,16 +41,18 @@ const Footer = () => {
     {
       key: [cmd, "Shift", "O"],
       description: "開啟新交談",
-      action: () => createNewChat(),
+      action: createNewChat,
     },
-    // { key: [cmd, "Shift", "I"], description: "設定自訂指令", action: () => {} },
-    // { key: ["Shift", "Esc"], description: "專注於交談輸入", action: () => {} },
+    {
+      key: [cmd, "Shift", "A"],
+      description: "開啟我的助理",
+      action: openAssistantDialog,
+    },
     {
       key: [cmd, "Shift", "S"],
       description: "切換側邊欄",
       action: toggleSidebar,
     },
-    // { key: [cmd, "Shift", ";"], description: "複製最後的程式碼區塊", action: () => {} },
     {
       key: [cmd, "Shift", del],
       description: "刪除交談",
@@ -57,11 +62,27 @@ const Footer = () => {
           setCurrentConversationId(conversations[conversations.length - 1].id);
       },
     },
-    // { key: [cmd, "Shift", "C"], description: "複製最後的回應", action: () => {} },
+    {
+      key: [cmd, "Shift", "↑"],
+      description: "複製上一次輸入",
+      action: () => {
+        const conv = conversations.find(
+          (conversation) => conversation.id === currentConversationId
+        );
+        if (conv && conv.messages.length >= 2) {
+          setInput(conv.id, conv.messages[conv.messages.length - 2].content);
+        }
+      },
+    },
     {
       key: [cmd, "/"],
       description: "顯示快捷鍵",
       action: () => setHotkeyDialogOpen(!hotkeyDialogOpen),
+    },
+    {
+      key: [cmd, "Esc"],
+      description: "顯示快捷鍵",
+      action: openSettingsDialog,
     },
   ];
 
@@ -85,8 +106,12 @@ const Footer = () => {
         const allKeysPressed = hotkey.key.every((k) => {
           if (k === cmd) return event.metaKey || event.ctrlKey;
           if (k === "Shift") return event.shiftKey;
-          if (k === del)
-            return event.key === "Backspace" || event.key === "Delete";
+          if (k === del) return event.key === "Backspace" || event.key === "Delete";
+          if (k === "Esc") return event.key === "Escape";
+          if (k == "↑") return event.key === "ArrowUp";
+          if (k == "↓") return event.key === "ArrowDown";
+          if (k == "→") return event.key === "ArrowRight";
+          if (k == "←") return event.key === "ArrowLeft";
           return event.key.toLowerCase() === k.toLowerCase();
         });
 

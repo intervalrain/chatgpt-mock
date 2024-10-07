@@ -18,6 +18,7 @@ interface ConversationContextType {
   createNewChat: () => void;
   archiveConversation: (id: string) => void;
   cleanUpOldConversations: () => void;
+  setInput: (id: string, input: string) => void;
 }
 
 const ConversationContext = createContext<ConversationContextType | undefined>(undefined);
@@ -86,6 +87,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode}> = ({ c
         role: "assistant",
       }],
       date: new Date(),
+      input: ""
     };
     addConversation(newConversation);
   }, [addConversation]);
@@ -104,6 +106,12 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode}> = ({ c
       prev.filter(conv => new Date(conv.date) > dueDate && !conv.archived)
           .slice(-maxConversations)
     );
+  }, []);
+
+  const setInput = useCallback((id: string, input: string) => {
+    setConversations(prev => prev.map(conv => 
+      conv.id === id ? {...conv, input: input } : conv
+    ));
   }, []);
 
   useEffect(() => {
@@ -134,6 +142,7 @@ export const ConversationProvider: React.FC<{ children: React.ReactNode}> = ({ c
       createNewChat,
       archiveConversation,
       cleanUpOldConversations,
+      setInput
     }}>
       {children}
     </ConversationContext.Provider>

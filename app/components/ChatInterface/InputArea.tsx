@@ -2,20 +2,23 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp } from 'lucide-react';
 import { getUUID } from '@/app/utils/uuid';
 import useChat from '@/app/hooks/useChat';
+import { useConversation } from '@/app/context/ConversationContext';
 
 interface InputAreaProps {
   onSendMessage: (content: string) => void;
 }
 
 const InputArea: React.FC<InputAreaProps> = ({ onSendMessage }) => {
-  const [input, setInput] = useState('');
+  const { setInput, conversations, currentConversationId } = useConversation();
+  const currentConversation = conversations.find(conv => conv.id === currentConversationId);
+  const input = currentConversation?.input ? currentConversation.input : '';
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { isLoading } = useChat();
 
   const handleSend = () => {
     if (!isLoading && input.trim()) {
       onSendMessage(input.trim());
-      setInput('');
+      setInput(currentConversationId!, '');
     }
   };
 
@@ -46,7 +49,7 @@ const InputArea: React.FC<InputAreaProps> = ({ onSendMessage }) => {
           ref={textareaRef}
           value={input}
           placeholder="傳訊息給 DSM Bot"
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => setInput(currentConversationId!, e.target.value)}
           onKeyDown={handleKeyPress}
           className="w-full p-4 pr-12 rounded-3xl focus:outline-none resize-none bg-gray-100"
           rows={1}

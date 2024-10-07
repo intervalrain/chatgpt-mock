@@ -15,7 +15,8 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
   const [language, setLanguage] = useState<"zh-TW" | "en">("zh-TW");
   const [temperature, setTemperature] = useState<number>(0.1);
   const [topK, setTopK] = useState<number>(5);
-	const [maxTokens, setMaxTokens] = useState<number>(4000);
+  const [maxTokens, setMaxTokens] = useState<number>(4000);
+  const [history, setHistory] = useState<number>(30);
 
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
@@ -24,7 +25,8 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
   const themeButtonRef = useRef<HTMLButtonElement>(null);
   const languageButtonRef = useRef<HTMLButtonElement>(null);
 
-  const { conversations, archiveConversation, removeConversation } = useConversation();
+  const { conversations, archiveConversation, removeConversation } =
+    useConversation();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -77,7 +79,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div
         ref={dialogRef}
-        className="bg-white rounded-2xl p-6 max-w-2xl w-full h-3/4 overflow-y-auto"
+        className="bg-white rounded-2xl p-6 max-w-2xl w-full h-1/2 overflow-y-auto"
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">設定</h2>
@@ -114,27 +116,29 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
               }`}
               onClick={() => setActiveTab("management")}
             >
-              管理
+              對話管理
             </button>
           </div>
 
-          {activeTab === 'general' && (
+          {activeTab === "general" && (
             <div className="space-y-4">
               <div className="flex justify-between text-nowrap items-center">
-                <p>主題</p>
-                <button 
+                <p className="font-semibold">主題</p>
+                <button
                   ref={themeButtonRef}
                   className="flex items-center justify-between w-auto p-2 font-semibold text-gray-600 rounded-md hover:bg-gray-100"
                   onClick={() => setThemeMenuOpen(!themeMenuOpen)}
                 >
                   <div className="flex items-center">
-                    <span className="mr-2">{themes.find(option => option.value === theme)?.label}</span>
+                    <span className="mr-2">
+                      {themes.find((option) => option.value === theme)?.label}
+                    </span>
                     <ChevronDown className="h-4 w-4" />
                   </div>
                 </button>
-                <Menu 
-                  isOpen={themeMenuOpen} 
-                  onClose={() => setThemeMenuOpen(false)} 
+                <Menu
+                  isOpen={themeMenuOpen}
+                  onClose={() => setThemeMenuOpen(false)}
                   align="left"
                   anchorEl={themeButtonRef.current}
                 >
@@ -142,34 +146,43 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
                     <button
                       key={option.value}
                       onClick={() => {
-                        setTheme(option.value as 'light' | 'dark');
+                        setTheme(option.value as "light" | "dark");
                         setThemeMenuOpen(false);
                       }}
                       className="flex w-11/12 items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100"
                     >
                       <div className="flex w-full items-center justify-between">
                         <div>{option.label}</div>
-                        <div>{option.value === theme && <Check className="h-4 w-4" />}</div>
+                        <div>
+                          {option.value === theme && (
+                            <Check className="h-4 w-4" />
+                          )}
+                        </div>
                       </div>
                     </button>
                   ))}
                 </Menu>
               </div>
               <div className="flex justify-between text-nowrap items-center">
-                <span>語言</span>
-                <button 
+                <span className="font-semibold">語言</span>
+                <button
                   ref={languageButtonRef}
                   className="flex items-center justify-between w-auto p-2 font-semibold text-gray-600 rounded-md hover:bg-gray-100"
                   onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
                 >
                   <div className="flex items-center">
-                    <span className="mr-2">{languages.find(option => option.value === language)?.label}</span>
+                    <span className="mr-2">
+                      {
+                        languages.find((option) => option.value === language)
+                          ?.label
+                      }
+                    </span>
                     <ChevronDown className="h-4 w-4" />
                   </div>
                 </button>
-                <Menu 
-                  isOpen={languageMenuOpen} 
-                  onClose={() => setLanguageMenuOpen(false)} 
+                <Menu
+                  isOpen={languageMenuOpen}
+                  onClose={() => setLanguageMenuOpen(false)}
                   align="left"
                   anchorEl={languageButtonRef.current}
                 >
@@ -177,14 +190,18 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
                     <button
                       key={option.value}
                       onClick={() => {
-                        setLanguage(option.value as 'zh-TW' | 'en');
+                        setLanguage(option.value as "zh-TW" | "en");
                         setLanguageMenuOpen(false);
                       }}
                       className="flex w-11/12 items-center m-2 px-2 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100"
                     >
                       <div className="flex w-full items-center justify-between">
                         <div>{option.label}</div>
-                        <div>{option.value === language && <Check className="h-4 w-4" />}</div>
+                        <div>
+                          {option.value === language && (
+                            <Check className="h-4 w-4" />
+                          )}
+                        </div>
                       </div>
                     </button>
                   ))}
@@ -221,7 +238,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
                 />
                 <p className="mt-1 text-sm text-gray-500">{topK}</p>
               </div>
-							<div>
+              <div>
                 <h4 className="mb-2 font-medium">Max Tokens</h4>
                 <input
                   type="range"
@@ -240,6 +257,19 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
           {activeTab === "management" && (
             <div className="space-y-4">
               <div>
+                <h4 className="mb-2 font-medium">保留對話天數</h4>
+                <input
+                  type="range"
+                  min="1"
+                  max="90"
+                  step="1"
+                  value={history}
+                  onChange={(e) => setHistory(parseFloat(e.target.value))}
+                  className="w-full"
+                />
+                <p className="mt-1 text-sm text-gray-500">{history}</p>
+              </div>
+              <div>
                 <h4 className="mb-2 font-medium">管理對話</h4>
                 <div className="space-y-2">
                   <button
@@ -255,7 +285,7 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({ isOpen, onClose }) => {
                   >
                     取消全部封存對話
                   </button>
-                  
+
                   <button
                     onClick={handleDeleteAllConversations}
                     className="w-full py-2 px-4 bg-red-500 text-white hover:bg-red-600 rounded"

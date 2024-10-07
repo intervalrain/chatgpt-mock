@@ -2,6 +2,7 @@ import { SidebarProvider } from "./SidebarContext";
 import { AppProvider } from "./AppContext";
 import { ConversationProvider } from "./ConversationContext";
 import { AssistantProvider } from "./AssistantContext";
+import { HeaderProvider } from "./HeaderContext";
 
 export const ServiceProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -11,7 +12,9 @@ export const ServiceProvider: React.FC<{ children: React.ReactNode }> = ({
       <AppProvider>
         <ConversationProvider>
           <AssistantProvider>
-            {children}
+            <HeaderProvider>
+              {children}
+            </HeaderProvider>
           </AssistantProvider>
         </ConversationProvider>
       </AppProvider>

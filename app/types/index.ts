@@ -10,9 +10,10 @@ export interface Conversation {
     messages: Message[];
     date: Date;
     archived?: boolean;
+    input?: string;
   }
 
-export type LlmModel = "mistral"; // | "llama2";
+export type LlmModel = "mistral"; 
 
 export interface Assistant {
   id: string;

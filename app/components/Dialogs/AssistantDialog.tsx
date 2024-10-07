@@ -1,9 +1,7 @@
 import { Assistant } from "@/app/types";
 import React, { useEffect, useRef, useState } from "react";
 import AssistantCard from "../Assistants/AssistantCard";
-import { getUUID } from "@/app/utils/uuid";
-import { ChevronLeft, ChevronRight, SquareChevronDown } from "lucide-react";
-import { useApp } from "@/app/context/AppContext";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useAssistant } from "@/app/context/AssistantContext";
 
 interface AssistantDialogProps {

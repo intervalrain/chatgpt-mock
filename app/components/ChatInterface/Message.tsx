@@ -78,14 +78,14 @@ const MessagePage: React.FC<Message> = ({ id, content, role}) => {
 						}}>
 						{content}
 					</ReactMarkdown>
-					{role === 'assistant' && (
+					{/* {role === 'assistant' && (
 						<div className="space-x-1 text-nowrap">
 							<TooltipButton icon={<Copy size={16}/>} tooltip="複製" />
 							<TooltipButton icon={<ThumbsUp size={16}/>} tooltip="回應良好" />
 							<TooltipButton icon={<ThumbsDown size={16}/>} tooltip="回應不佳" />
 							<TooltipButton icon={<RefreshCcw size={16}/>} tooltip="重新生成" />			
 						</div>
-					)}
+					)} */}
 				</div>
 			</div>
         </div>
