@@ -12,11 +12,13 @@ import { useNavigate } from "react-router-dom";
 import { useSidebar } from "@/app/context/SidebarContext";
 import SidebarItem from "./SidebarItem";
 import { useConversation } from "@/app/context/ConversationContext";
+import { useDialog } from "@/app/context/DialogContext";
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const { isCollpased, toggleSidebar } = useSidebar();
   const { createNewChat } = useConversation();
+  const { openDialog } = useDialog();
 
   const handleNewChat = () => {
     createNewChat();
@@ -45,8 +47,7 @@ const Sidebar: React.FC = () => {
         </button>
       </div>
       <div className="p-2 mx-2">
-        <SidebarItem icon={<Bot size={20}/>} text="DSM Bot" onClick={() => navigate("../")} />
-        <SidebarItem icon={<SquareLibrary size={20}/>} text="DSM Documents" onClick={() => {}} />
+        <SidebarItem icon={<SquareLibrary size={20}/>} text="DSM Documents" onClick={() => openDialog("document")} />
       </div>
       <ConversationList />
     </aside>

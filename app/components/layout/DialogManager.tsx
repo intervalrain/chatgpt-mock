@@ -7,6 +7,7 @@ import HotkeyDialog from "../Dialogs/HotkeyDialog";
 import VersionDialog from "../Dialogs/VersionDialog";
 import PolicyDialog from "../Dialogs/PolicyDialog";
 import ManualDialog from "../Dialogs/ManualDialog";
+import DocumentDialog from "../Dialogs/DocumentDialog";
 import { useConversation } from "../../context/ConversationContext";
 import { useSidebar } from "../../context/SidebarContext";
 
@@ -65,6 +66,11 @@ const DialogManager: React.FC = () => {
           setInput(conv.id, conv.messages[conv.messages.length - 2].content);
         }
       },
+    },
+    {
+      key: [cmd, "Shift", "D"],
+      description: "開啟 DSM Documents",
+      action: () => openDialog("document"),
     },
     {
       key: [cmd, "/"],
@@ -165,6 +171,10 @@ const DialogManager: React.FC = () => {
       />
       <ManualDialog
         isOpen={isDialogOpen("manual")}
+        onClose={() => closeDialog()}
+      />
+      <DocumentDialog 
+        isOpen={isDialogOpen("document")}
         onClose={() => closeDialog()}
       />
     </div>

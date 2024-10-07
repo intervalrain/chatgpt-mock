@@ -4,23 +4,26 @@ import { ConversationProvider } from "./ConversationContext";
 import { AssistantProvider } from "./AssistantContext";
 import { DocumentProvider } from "./DocumentContext";
 import { DialogProvider } from "./DialogContext";
+import { AuthProvider } from "./AuthContext";
 
 export const ServiceProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   return (
-    <SidebarProvider>
-      <AppProvider>
-        <ConversationProvider>
-          <AssistantProvider>
-            <DocumentProvider>
-              <DialogProvider>
-                {children}
-              </DialogProvider>
-            </DocumentProvider>
-          </AssistantProvider>
-        </ConversationProvider>
-      </AppProvider>
-    </SidebarProvider>
+    <AuthProvider>
+      <SidebarProvider>
+        <AppProvider>
+          <ConversationProvider>
+            <AssistantProvider>
+              <DocumentProvider>
+                <DialogProvider>
+                  {children}
+                </DialogProvider>
+              </DocumentProvider>
+            </AssistantProvider>
+          </ConversationProvider>
+        </AppProvider>
+      </SidebarProvider>
+    </AuthProvider>
   );
 };
