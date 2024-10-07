@@ -3,7 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import AssistantCard from "../Assistants/AssistantCard";
 import { getUUID } from "@/app/utils/uuid";
 import { ChevronLeft, ChevronRight, SquareChevronDown } from "lucide-react";
-import { error } from "console";
+import { useApp } from "@/app/context/AppContext";
+import { useAssistant } from "@/app/context/AssistantContext";
 
 interface AssistantDialogProps {
   isOpen: boolean;
@@ -16,72 +17,49 @@ const AssistantDialog: React.FC<AssistantDialogProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const [assistants] = useState<Assistant[]>([
-    {
-      id: getUUID(),
-      emoji: "🧠",
-      title: "Default",
-      description: "一個通用的 DSM 助理",
-      author: "Rain Hu",
-      systemPrompt:
-        "你是一個 DSM 的專家，你會用 markdown 與 latex(單錢號為 inline, 雙錢號為 block) 來整理資料。當遇到你沒有檢索到的內容，你會回答不知道。",
-    },
-    {
-      id: getUUID(),
-      emoji: "🧠",
-      title: "PEI 助理",
-      description: "擅長解釋不同的 design rules",
-      author: "C.C.Chen",
-      systemPrompt:
-        "你是一個 DSM 的專家，你會用 markdown 與 latex(單錢號為 inline, 雙錢號為 block) 來整理資料。當遇到你沒有檢索到的內容，你會回答不知道。",
-    },
-    {
-      id: getUUID(),
-      emoji: "👨‍💻",
-      title: "TD 助理",
-      description: "擅長不同的 layout pattern",
-      author: "W.H.Wang",
-      systemPrompt:
-        "你是一個 DSM 的專家，你會用 markdown 與 latex(單錢號為 inline, 雙錢號為 block) 來整理資料。當遇到你沒有檢索到的內容，你會回答不知道。",
-    },
-    {
-      id: getUUID(),
-      emoji: "🧠",
-      title: "CE 助理",
-      description: "擅長不同 technologies 的比較",
-      author: "J.P.Lin",
-      systemPrompt:
-        "你是一個 DSM 的專家，你會用 markdown 與 latex(單錢號為 inline, 雙錢號為 block) 來整理資料。當遇到你沒有檢索到的內容，你會回答不知道。",
-    },
-    {
-      id: getUUID(),
-      emoji: "👨‍💻",
-      title: "PED 助理",
-      description: "擅長回答 backend 的設計問題",
-      author: "Rain Hu",
-      systemPrompt:
-        "你是一個 DSM 的專家，你會用 markdown 與 latex(單錢號為 inline, 雙錢號為 block) 來整理資料。當遇到你沒有檢索到的內容，你會回答不知道。",
-    },
-  ]);
-
+  const [loading, setLoading] = useState(false);
+  const [assistants, setAssistants] = useState<Assistant[]>([]);
   const [editingAssistant, setEditingAssistant] = useState<Assistant | null>(
     null
   );
-  const [activeAssistant, setActiveAssistant] = useState<Assistant | null>(
-    null
-  );
+  const { activeAssistant, setActiveAssistant } = useAssistant();
 
   const [showRightArrow, setShowRightArrow] = useState(false);
-	const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-	const checkScroll = () => {
-		if (scrollContainerRef.current) {
-			const { scrollWidth, clientWidth, scrollLeft } = scrollContainerRef.current;
-			setShowLeftArrow(scrollLeft > 0);
-			setShowRightArrow(scrollWidth > clientWidth && scrollLeft < scrollWidth - clientWidth);
-		}
-	}
+  useEffect(() => {
+    if (isOpen) {
+      fetchAssistants();
+    }
+  }, [isOpen]);
+
+  const fetchAssistants = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/assistants");
+      if (!response.ok) {
+        throw new Error("Failed to fetch assistants");
+      }
+      const data = await response.json();
+      setAssistants(data);
+    } catch (error) {
+      console.error("Error fetching assistants:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const checkScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollWidth, clientWidth, scrollLeft } =
+        scrollContainerRef.current;
+      setShowLeftArrow(scrollLeft > 0);
+      setShowRightArrow(
+        scrollWidth > clientWidth && scrollLeft < scrollWidth - clientWidth
+      );
+    }
+  };
 
   const handleEdit = (assistant: Assistant) => {
     setEditingAssistant(assistant);
@@ -98,14 +76,17 @@ const AssistantDialog: React.FC<AssistantDialogProps> = ({
     return () => window.removeEventListener("resize", checkScroll);
   }, []);
 
-	const scroll = (direction: 'left' | 'right') => {
-		if (scrollContainerRef.current) {
-			const cardWidth = scrollContainerRef.current.offsetWidth / 3;
-			const scrollAmout = direction === 'left' ? -cardWidth : cardWidth;
-			scrollContainerRef.current.scrollBy({ left: scrollAmout, behavior: "smooth" });
-			setTimeout(checkScroll, 500);
-		}
-	};
+  const scroll = (direction: "left" | "right") => {
+    if (scrollContainerRef.current) {
+      const cardWidth = scrollContainerRef.current.offsetWidth / 3;
+      const scrollAmout = direction === "left" ? -cardWidth : cardWidth;
+      scrollContainerRef.current.scrollBy({
+        left: scrollAmout,
+        behavior: "smooth",
+      });
+      setTimeout(checkScroll, 500);
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -121,43 +102,48 @@ const AssistantDialog: React.FC<AssistantDialogProps> = ({
         </div>
         <div className="my-4 h-px bg-gray-200" role="none" />
         <div className="relative">
-          <div
-            ref={scrollContainerRef}
-            className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide"
-            onScroll={() => {
-              if (scrollContainerRef.current) {
-                const { scrollWidth, clientWidth, scrollLeft } =
-                  scrollContainerRef.current;
-                setShowRightArrow(
-                  scrollWidth > clientWidth &&
-                    scrollLeft < scrollWidth - clientWidth
-                );
-              }
-            }}
-          >
-            {assistants.map((assistant) => (
-              <div key={assistant.id} className="flex-shrink-0 w-1/3">
-                <AssistantCard
-                  assistant={assistant}
-                  onEdit={handleEdit}
-                  onApply={handleApply}
-                  isActive={assistant.id === activeAssistant?.id}
-                />
-              </div>
-            ))}
-          </div>
-					{showLeftArrow && (
-            <button 
+          {loading ? (
+            <div className="text-center py-4">Loading assistants...</div>
+          ) : (
+            <div
+              ref={scrollContainerRef}
+              className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide"
+              onScroll={() => {
+                if (scrollContainerRef.current) {
+                  const { scrollWidth, clientWidth, scrollLeft } =
+                    scrollContainerRef.current;
+                  setShowRightArrow(
+                    scrollWidth > clientWidth &&
+                      scrollLeft < scrollWidth - clientWidth
+                  );
+                }
+              }}
+            >
+              {assistants.map((assistant) => (
+                <div key={assistant.id} className="flex-shrink-0 w-1/3">
+                  <AssistantCard
+                    assistant={assistant}
+                    onEdit={handleEdit}
+                    onApply={handleApply}
+                    isActive={assistant.id === activeAssistant?.id}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {showLeftArrow && (
+            <button
               className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-75 p-2 rounded-full shadow-md hover:bg-opacity-100 transition-all duration-200"
-              onClick={() => scroll('left')}
+              onClick={() => scroll("left")}
             >
               <ChevronLeft className="text-gray-600" size={24} />
             </button>
           )}
           {showRightArrow && (
-            <button 
+            <button
               className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-75 p-2 rounded-full shadow-md hover:bg-opacity-100 transition-all duration-200"
-              onClick={() => scroll('right')}
+              onClick={() => scroll("right")}
             >
               <ChevronRight className="text-gray-600" size={24} />
             </button>

@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 const MODEL_PORTS: Record<LlmModel, number> = {
     mistral: 11434,
-    llama2: 57479
 }
 
 export async function POST(request: NextRequest) {
