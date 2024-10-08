@@ -5,6 +5,7 @@ interface AssistantContextType {
   activeAssistant: Assistant | null;
   setActiveAssistant: (assistant: Assistant | null) => void;
   assistants: Assistant[];
+  setAssistants: React.Dispatch<React.SetStateAction<Assistant[]>>;
   fetchAssistants: () => Promise<void>;
   isLoading: boolean;
 }
@@ -59,6 +60,7 @@ export const AssistantProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       activeAssistant, 
       setActiveAssistant: updateActiveAssistant, 
       assistants,
+      setAssistants,
       fetchAssistants,
       isLoading 
       }}>
