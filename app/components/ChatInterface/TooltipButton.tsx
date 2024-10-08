@@ -3,17 +3,20 @@ import { useState } from "react";
 interface TooltipButtonProps {
   icon: React.ReactNode;
   tooltip: string;
+  onClick: () => void;
+  isActive?: boolean;
 }
 
-const TooltipButton: React.FC<TooltipButtonProps> = ({ icon, tooltip }) => {
+const TooltipButton: React.FC<TooltipButtonProps> = ({ icon, tooltip, onClick, isActive }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   return (
     <div className="relative inline-block">
       <button
-        className="hover:bg-gray-100 p-2 rounded-md"
+        className={`hover:bg-gray-100 p-2 rounded-md ${isActive ? 'bg-blue-200' : ''}`}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
+        onClick={onClick}
       >
         {icon}
       </button>
