@@ -50,9 +50,11 @@ const DialogManager: React.FC = () => {
       key: [cmd, "Shift", del],
       description: "刪除交談",
       action: () => {
-        removeConversation(currentConversationId as string);
-        if (conversations.length > 0)
-          setCurrentConversationId(conversations[conversations.length - 1].id);
+        if (window.confirm("確定要刪除這個對話嗎？")) {
+          removeConversation(currentConversationId as string);
+          if (conversations.length > 0)
+            setCurrentConversationId(conversations[conversations.length - 1].id);
+        }
       },
     },
     {
@@ -134,17 +136,6 @@ const DialogManager: React.FC = () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [handleKeyDown]);
-
-  const renderKeyCombo = (keyCombo: string[]) => {
-    return keyCombo.map((key, index) => (
-      <kbd
-        key={index}
-        className="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-white border border-gray-200 rounded-md"
-      >
-        {key}
-      </kbd>
-    ));
-  };
 
   return (
     <div>

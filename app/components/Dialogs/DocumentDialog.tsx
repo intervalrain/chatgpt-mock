@@ -191,8 +191,8 @@ const DocumentDialog: React.FC<DocumentDialogProps> = ({ isOpen, onClose }) => {
                 )}
               </div>
 
-              <div className="flex flex-1 overflow-hidden h-96">
-                <div className="w-5/12 bg-white rounded shadow mr-2 flex flex-col">
+              <div className="flex flex-1 overflow-hidden h-96 justify-center">
+                <div className="w-1/2 bg-white rounded shadow mr-2 flex flex-col">
                   <h2 className="text-base font-semibold p-2 bg-gray-200 text-gray-800">
                     Unselected Documents
                   </h2>
@@ -227,7 +227,7 @@ const DocumentDialog: React.FC<DocumentDialogProps> = ({ isOpen, onClose }) => {
                     <ChevronsLeft size={24} />
                   </button>
                 </div>
-                <div className="w-5/12 bg-white rounded shadow ml-2">
+                <div className="w-1/2 bg-white rounded shadow ml-2">
                   <h2 className="text-base font-semibold p-2 bg-gray-200 text-gray-800">
                     Selected Documents
                   </h2>
